@@ -4,21 +4,19 @@ import threading
 import time
 from playsound import playsound
 
-def resource_path(relative_path):
-    """หาทางไปยัง resource ทั้งตอน run script ตรงๆ และตอน build exe"""
+def resource_path(relative_path):
     if hasattr(sys, '_MEIPASS'):
         return os.path.join(sys._MEIPASS, relative_path)
     return os.path.join(os.path.abspath("."), relative_path)
 
-def play_sound(file):
-    # เล่นเสียงใน Thread แยก ไม่ให้ค้างโปรแกรม
+def play_sound(file):
     threading.Thread(target=lambda: playsound(resource_path(file)), daemon=True).start()
 
 class TimerAPI:
     def __init__(self):
         self.seconds = 0
         self.running = False
-        self.countdown = False  # สำหรับนับถอยหลัง
+        self.countdown = False
 
     # --- Timer ปกติ ---
     def start_timer(self):
@@ -57,7 +55,7 @@ class TimerAPI:
         play_sound("click.mp3")  # เล่นเสียงตอนกด Reset
         return "Reset"
 
-    # --- ลูปเวลาจริง ---
+    # --- ลูปเวลา ---
     def run_timer(self):
         while self.running:
             time.sleep(1)
@@ -66,7 +64,7 @@ class TimerAPI:
                     self.seconds -= 1
                 else:
                     self.running = False
-                    play_sound("alarm.mp3")  # หมดเวลาให้ดัง Alarm
+                    play_sound("alarm.mp3")
             else:
                 self.seconds += 1
             # อัปเดต HTML ผ่าน JS
